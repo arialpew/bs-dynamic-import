@@ -113,7 +113,7 @@ DynamicImport.(
     ((module Math): (module ImportableMath.t)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 1) **"DynamicImport.import"** take a module path (same as JavaScript API) and return a Promise of importable module.
@@ -140,7 +140,7 @@ DynamicImport.(
       Js.log(Math.addOne(3)) /* 4 */
   )
   >>=! (error => Js.log(error))
-):
+);
 ```
 
 ## Multiple module
@@ -215,7 +215,7 @@ DynamicImport.(
     ((module Math)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 ✔️ Good :
@@ -229,7 +229,7 @@ DynamicImport.(
     ((module Math): (module ImportableMath.t)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 #### "The value >>= can't be found."
@@ -259,7 +259,7 @@ DynamicImport.(
     ((module Math): (module ImportableMath.t)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 ```reason
@@ -295,7 +295,7 @@ DynamicImport.(
     ((module Math): (module ImportableMath.t)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 ```reason
@@ -307,7 +307,7 @@ DynamicImport.(
     ((module Math): (module ImportableMath.t)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 ```reason
@@ -319,7 +319,7 @@ DynamicImport.(
     ((module Math): (module ImportableMath.t)) =>
       Js.log(Math.addOne(3)) /* 4 */
   )
-):
+);
 ```
 
 ```reason
@@ -331,7 +331,7 @@ DynamicImport.(
     ((module JQuery): (module ImportableJQuery.t)) =>
       Js.log(JQuery.$("body"))
   )
-):
+);
 ```
 
 ```reason
@@ -344,7 +344,7 @@ DynamicImport.(
       Js.log(JQuery.$("body"))
   )
   >>=! (error => error) /* Can't, should be unit because on >>= we return an unit ! */
-):
+);
 ```
 
 ✔️ Good :
@@ -359,5 +359,5 @@ DynamicImport.(
       Js.log(Math.addOne(3)) /* 4 */
   )
   >>=! (_error => Js.log("Something goes wrong, reloading ..."))
-):
+);
 ```
