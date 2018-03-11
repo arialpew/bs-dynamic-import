@@ -1,0 +1,8 @@
+.idea
+.merlin
+.cache
+.bsb.lock
+node_modules
+coverage
+lib
+lerna-debug.log

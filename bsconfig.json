@@ -1,0 +1,25 @@
+{
+  "name": "bs-dynamic-import",
+  "bsc-flags": ["-bs-no-version-header", "-bs-super-errors"],
+  "reason": {},
+  "bs-dependencies": [],
+  "bs-dev-dependencies": ["@glennsl/bs-jest"],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "refmt": 3,
+  "namespace": true
+}

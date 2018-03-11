@@ -1,0 +1,30 @@
+{
+  "name": "bs-dynamic-import",
+  "scripts": {
+    "make": "cross-env NODE_ENV=production bsb -make-world",
+    "makew": "cross-env NODE_ENV=development bsb -make-world -w",
+    "test": "jest",
+    "testw": "jest --watchAll",
+    "format": "./refmt.sh",
+    "interface": "bsc -bs-re-out",
+    "clean": "bsb -clean-world"
+  },
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.2",
+    "babel-core": "^6.26.0",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-preset-env": "^1.6.1",
+    "bs-platform": "^2.2.2",
+    "cross-env": "^5.1.4",
+    "jest": "^22.4.2",
+    "lerna": "^2.9.0",
+    "npm-update-all": "^1.0.1"
+  },
+  "dependencies": {},
+  "jest": {
+    "transformIgnorePatterns": [],
+    "testMatch": [
+      "**/__tests__/**/*_test.bs.js"
+    ]
+  }
+}

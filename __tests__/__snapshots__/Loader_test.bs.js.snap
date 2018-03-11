@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loader should fail if module doesn't exist 1`] = `[Error: Cannot find module './Mocks/Math/???.bs' from 'Loader_test.bs.js']`;
+
+exports[`Loader should load one module 1`] = `"Math-BsDynamicImport"`;
