@@ -158,7 +158,7 @@ We expose few infix operator for better experience :
 - \>>= (Promise then bind).
 - =<< (Reverse Promise then bind).
 - \>>=! (Promise catch bind).
-- =<< (Reverse Promise catch bind).
+- !=<< (Reverse Promise catch bind).
 
 Underlying, these operator work with any **Js.Promise.t**.
 
