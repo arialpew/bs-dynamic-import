@@ -2,12 +2,12 @@ open Jest;
 
 open Expect;
 
-open Infix;
+open DynamicImport;
 
 describe("load", () => {
   testPromise("should load one module", () =>
-    Loader.import("./Mocks/WithReason/ImportableWithReason.bs")
-    |> Loader.load
+    import("./Mocks/WithReason/ImportableWithReason.bs")
+    |> load
     >>= (
       ((module AnonymousModule): (module ImportableWithReason.t)) =>
         AnonymousModule.getDumbValue() |> expect |> toMatchSnapshot
@@ -15,8 +15,8 @@ describe("load", () => {
     >>=! ((_) => fail("this case should not happen !"))
   );
   testPromise("should fail if module doesn't exist", () =>
-    Loader.import("./Mocks/WithReason/???.bs")
-    |> Loader.load
+    import("./Mocks/WithReason/???.bs")
+    |> load
     >>= ((_) => fail("this case should not happen !"))
     >>=! (error => error |> expect |> toMatchSnapshot)
   );
@@ -24,9 +24,9 @@ describe("load", () => {
 
 describe("load2", () => {
   testPromise("should load two module in parallel", () =>
-    Loader.load2((
-      Loader.import("./Mocks/WithReason/ImportableWithReason.bs"),
-      Loader.import("./Mocks/WithOcaml/ImportableWithOcaml.bs")
+    load2((
+      import("./Mocks/WithReason/ImportableWithReason.bs"),
+      import("./Mocks/WithOcaml/ImportableWithOcaml.bs")
     ))
     >>= (
       (
@@ -44,9 +44,9 @@ describe("load2", () => {
     >>=! ((_) => fail("this case should not happen !"))
   );
   testPromise("should fail if at least one module doesn't exist", () =>
-    Loader.load2((
-      Loader.import("./Mocks/WithReason/ImportableWithReason.bs"),
-      Loader.import("./Mocks/WithOcaml/???.bs")
+    load2((
+      import("./Mocks/WithReason/ImportableWithReason.bs"),
+      import("./Mocks/WithOcaml/???.bs")
     ))
     >>= ((_) => fail("this case should not happen !"))
     >>=! (error => error |> expect |> toMatchSnapshot)

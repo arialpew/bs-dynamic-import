@@ -1,10 +1,10 @@
 
 
-import * as WithOcaml$BsDynamicImport from "./WithOcaml.bs.js";
+import * as WithOcaml from "./WithOcaml.bs.js";
 
-var importable = /* WithOcaml-BsDynamicImport */[
-  WithOcaml$BsDynamicImport.addOne,
-  WithOcaml$BsDynamicImport.multByTwo
+var importable = /* WithOcaml */[
+  WithOcaml.addOne,
+  WithOcaml.multByTwo
 ];
 
 export {

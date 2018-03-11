@@ -1,8 +1,8 @@
 
 
-import * as WithReason$BsDynamicImport from "./WithReason.bs.js";
+import * as WithReason from "./WithReason.bs.js";
 
-var importable = /* WithReason-BsDynamicImport */[WithReason$BsDynamicImport.getDumbValue];
+var importable = /* WithReason */[WithReason.getDumbValue];
 
 export {
   importable ,

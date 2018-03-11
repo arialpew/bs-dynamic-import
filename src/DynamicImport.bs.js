@@ -1,15 +1,39 @@
 
 
-import * as Infix$BsDynamicImport from "./Infix.bs.js";
+import * as Curry from "bs-platform/lib/es6/curry.js";
+
+function $great$great$eq(a, b) {
+  return a.then((function (param) {
+                return Promise.resolve(Curry._1(b, param));
+              }));
+}
+
+function $great$great$eq$bang(a, b) {
+  return a.catch((function (param) {
+                return Promise.resolve(Curry._1(b, param));
+              }));
+}
+
+function $eq$less$less(a, b) {
+  return b.then((function (param) {
+                return Promise.resolve(Curry._1(a, param));
+              }));
+}
+
+function $bang$eq$less$less(a, b) {
+  return b.catch((function (param) {
+                return Promise.resolve(Curry._1(a, param));
+              }));
+}
 
 function load(fetch) {
-  return Infix$BsDynamicImport.$great$great$eq(fetch, (function (x) {
+  return $great$great$eq(fetch, (function (x) {
                 return x.importable;
               }));
 }
 
 function load2(fetchs) {
-  return Infix$BsDynamicImport.$great$great$eq(Promise.all(fetchs), (function (param) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
                         param[0].importable,
                         param[1].importable
@@ -18,7 +42,7 @@ function load2(fetchs) {
 }
 
 function load3(fetchs) {
-  return Infix$BsDynamicImport.$great$great$eq(Promise.all(fetchs), (function (param) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
                         param[0].importable,
                         param[1].importable,
@@ -28,7 +52,7 @@ function load3(fetchs) {
 }
 
 function load4(fetchs) {
-  return Infix$BsDynamicImport.$great$great$eq(Promise.all(fetchs), (function (param) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
                         param[0].importable,
                         param[1].importable,
@@ -39,7 +63,7 @@ function load4(fetchs) {
 }
 
 function load5(fetchs) {
-  return Infix$BsDynamicImport.$great$great$eq(Promise.all(fetchs), (function (param) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
                         param[0].importable,
                         param[1].importable,
@@ -51,7 +75,7 @@ function load5(fetchs) {
 }
 
 function load6(fetchs) {
-  return Infix$BsDynamicImport.$great$great$eq(Promise.all(fetchs), (function (param) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
                         param[0].importable,
                         param[1].importable,
@@ -64,6 +88,10 @@ function load6(fetchs) {
 }
 
 export {
+  $great$great$eq ,
+  $great$great$eq$bang ,
+  $eq$less$less ,
+  $bang$eq$less$less ,
   load ,
   load2 ,
   load3 ,
