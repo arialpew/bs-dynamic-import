@@ -119,7 +119,7 @@ DynamicImport.(
 
 2) "DynamicImport.load" take a Promise of importable module and return a Promise of module.
 
-3) After module is dynamically loaded, you can use >>= (bind) operator to traverse the promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
+3) After module is dynamically loaded, you can use >>= (bind) operator to traverse the Promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
 
 4) Be carefull, if you use wrong interface or don't provide it, you will face compiler error. For example, "ImportableMath.t" resolve the anonymous module (named "Math" in this example for clarity) with correct interface.
 
