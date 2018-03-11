@@ -1,17 +1,38 @@
 # Summary
 
+[![Build Status](https://travis-ci.org/kMeillet/bs-dynamic-import.svg?branch=master)](https://travis-ci.org/kMeillet/bs-dynamic-import)
+
 📦🚀 BuckleScript dynamic import interopt on JavaScript environment.
 
 Provide a clear path for Reason/Ocaml module to become importable at JavaScript runtime with type-safety.
 
+* [Installation](#installation)
 * [Motivation](#motivation)
   * [Common problems](#common-problems)
 * [Example](#example)
   * [Basic example](#basic-example)
   * [Multiple module](#multiple-module)
 * [API](#api)
+  * [Loader](#loader)
+  * [Infix](#infix)
 * [Alternatives](#alternatives)
 * [Common errors](#common-errors)
+
+# Installation
+
+```sh
+npm install bs-dynamic-import --save
+```
+
+Then add it to "bsconfig.json" :
+
+```sh
+"bs-dependencies": [
+ "bs-dynamic-import"
+]
+```
+
+You can now use **"DynamicImport"** module.
 
 # Motivation
 
@@ -125,6 +146,10 @@ We expose few infix operator for better DX :
 
 # API
 
+## Create dynamic module
+
+To create a dynamic version of a static module X, you need to create new file with this pattern :
+
 ```reason
 /* ImportableX.re */
 module type t = (module type of X);
@@ -132,8 +157,27 @@ module type t = (module type of X);
 let importable: t = (module X);
 ```
 
-[![API](http://image.noelshack.com/fichiers/2018/10/7/1520780568-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520780568-code.png)
+## Loader
 
+[![API](http://image.noelshack.com/fichiers/2018/10/7/1520788049-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520788049-code.png)
+
+#### type importable('a)
+
+Represent dynamic module.
+
+#### import: string => Js.Promise.t(importable('a))
+
+Import dynamic module via path.
+
+#### load: Js.Promise.t(importable('a)) => Js.Promise.t('a)
+
+Resolve dynamic module.
+
+There is load2, load3, load4, load5, load6 that do the same thing with tuple of dynamic module, for parallel import.
+
+## Infix
+
+[![API](http://image.noelshack.com/fichiers/2018/10/7/1520788211-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520788211-code.png)
 
 # Alternatives
 
@@ -142,7 +186,7 @@ let importable: t = (module X);
 
 # Common errors
 
-#### The signature for this packaged module couldn't be inferred.
+#### "The signature for this packaged module couldn't be inferred."
 
 This error mean you forgot to provide interface on anonymous module.
 
