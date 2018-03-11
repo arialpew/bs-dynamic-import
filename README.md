@@ -138,7 +138,7 @@ If you want to import multiple module in parallel, there is multiple load functi
 - DynamicImport.load5
 - DynamicImport.load6
 
-We expose few infix operator for better DX :
+We expose few infix operator for better experience :
 
 - \\>>= (Promise then bind).
 - =<< (Reverse Promise then bind).
