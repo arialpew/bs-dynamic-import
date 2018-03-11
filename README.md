@@ -129,7 +129,7 @@ DynamicImport.(
 
 ## Multiple module
 
-If you want to import multiple module in parallel, there is multiple load function who work with tuple instead of single argument :
+If you want to import multiple module in parallel, there is multiple load function who work with tuple :
 
 - DynamicImport.load2
 - DynamicImport.load3
