@@ -116,19 +116,19 @@ DynamicImport.(
 ):
 ```
 
-1) "DynamicImport.import" take a module path (same as JavaScript API) and return a Promise of importable module.
+1) **"DynamicImport.import"** take a module path (same as JavaScript API) and return a Promise of importable module.
 
-2) "DynamicImport.load" take a Promise of importable module and return a Promise of module.
+2) **"DynamicImport.load"** take a Promise of importable module and return a Promise of module.
 
-3) After module is dynamically loaded, you can use >>= (then bind) operator to traverse the Promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
+3) After module is dynamically loaded, you can use **">>="** (then bind) operator to traverse the Promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
 
 4) Be carefull, if you use wrong interface or don't provide it, you will face compiler error. For example, "ImportableMath.t" resolve the anonymous module (named "Math" in this example for clarity) with correct interface.
 
 **Note :** if you import wrong module or a path who doesn't exist, compiler will not complain but bundler will.
 
-**Note :** when using "DynamicImport.import" you should provide the ".bs" extension (or configure your bundler to recognize with ".bs.js" extension as JavaScript module).
+**Note :** when using **"DynamicImport.import"** you should provide the ".bs" extension (or configure your bundler to recognize ".bs.js" extension as JavaScript module).
 
-On final step, if some trouble happen, you can catch the error and react with >>=! operator (catch bind).
+On final step, if some trouble happen, you can catch the error and react with **">>=!"** operator (catch bind) ; always return the same type of expected result.
 
 ```reason
 /* Main.re */
@@ -160,6 +160,8 @@ We expose few infix operator for better experience :
 - \>>=! (Promise catch bind).
 - =<< (Reverse Promise catch bind).
 
+Underlying, these operator work with any **Js.Promise.t**.
+
 # API
 
 ## Create dynamic module
@@ -179,11 +181,11 @@ let importable: t = (module X);
 
 #### type importable('a)
 
-Represent dynamic module.
+Represent a dynamic module who can be imported later.
 
 #### import: string => Js.Promise.t(importable('a))
 
-Import dynamic module via path.
+Import dynamic module via relative path, from the current module.
 
 #### load: Js.Promise.t(importable('a)) => Js.Promise.t('a)
 
@@ -200,7 +202,7 @@ There is load2, load3, load4, load5, load6 that do the same thing with tuple of 
 
 #### "The signature for this packaged module couldn't be inferred."
 
-This error mean you forgot to provide interface on anonymous module.
+This error mean you forgot to provide interface on resolved module.
 
 ❌ Wrong :
 
@@ -231,6 +233,8 @@ DynamicImport.(
 ```
 
 #### "The value >>= can't be found."
+
+You should use local or global open to have **"DynamicImport"** module in scope.
 
 ❌ Wrong :
 
@@ -268,4 +272,92 @@ import("./ImportableMath.bs")
   ((module Math): (module ImportableMath.t)) =>
     Js.log(Math.addOne(3)) /* 4 */
 );
+```
+
+#### JavaScript runtime type error (nightmare !)
+
+Compiler and bundler can not verify that you have imported the correct module.
+
+That's your responsability and you should be cautious about this because it's very error prone.
+
+Always import the dynamic module compiled by BuckleScript (ImportableX.bs.js file), never import Reason/Ocaml module (X.re or X.ml) or static JavaScript module (X.js).
+
+On last side, you can catch any error with **">>=!"** operator (catch bind) ; you should return the same type from last **">>="**.
+
+❌ Wrong :
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("./Math.re") /* Can't */
+  |> load
+  >>= (
+    ((module Math): (module ImportableMath.t)) =>
+      Js.log(Math.addOne(3)) /* 4 */
+  )
+):
+```
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("./Math.js") /* Can't */
+  |> load
+  >>= (
+    ((module Math): (module ImportableMath.t)) =>
+      Js.log(Math.addOne(3)) /* 4 */
+  )
+):
+```
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("./Math.ml") /* Can't */
+  |> load
+  >>= (
+    ((module Math): (module ImportableMath.t)) =>
+      Js.log(Math.addOne(3)) /* 4 */
+  )
+):
+```
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("jquery") /* Can't */
+  |> load
+  >>= (
+    ((module JQuery): (module ImportableJQuery.t)) =>
+      Js.log(JQuery.$("body"))
+  )
+):
+```
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("jquery") /* Can't */
+  |> load
+  >>= (
+    ((module JQuery): (module ImportableJQuery.t)) =>
+      Js.log(JQuery.$("body"))
+  )
+  >>=! (error => error) /* Can't, should be unit because on >>= we return an unit  ! */
+):
+```
+
+✔️ Good :
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("./ImportableMath.bs")
+  |> load
+  >>= (
+    ((module Math): (module ImportableMath.t)) =>
+      Js.log(Math.addOne(3)) /* 4 */
+  )
+  >>=! (_error => Js.log("Something goes wrong, reloading ..."))
+):
 ```
