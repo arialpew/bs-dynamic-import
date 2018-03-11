@@ -114,7 +114,7 @@ If you want to import multiple module in parallel, there is multiple load functi
 - DynamicImport.load3
 - DynamicImport.load4
 - DynamicImport.load5
-- DynamicImport.Load6
+- DynamicImport.load6
 
 We expose few infix operator for better DX :
 
