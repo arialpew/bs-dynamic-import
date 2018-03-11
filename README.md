@@ -343,7 +343,7 @@ DynamicImport.(
     ((module JQuery): (module ImportableJQuery.t)) =>
       Js.log(JQuery.$("body"))
   )
-  >>=! (error => error) /* Can't, should be unit because on >>= we return an unit  ! */
+  >>=! (error => error) /* Can't, should be unit because on >>= we return an unit ! */
 ):
 ```
 
