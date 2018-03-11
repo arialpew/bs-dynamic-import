@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/kMeillet/bs-dynamic-import.svg?branch=master)](https://travis-ci.org/kMeillet/bs-dynamic-import)
 ![NPM license](https://img.shields.io/npm/l/bs-dynamic-import.svg?style=flat)
 
-📦🚀 BuckleScript dynamic import interopt on JavaScript environment.
+📦🚀 BuckleScript dynamic import interop on JavaScript environment.
 
 Provide a clear path for Reason/Ocaml module to become importable at JavaScript runtime with type-safety.
 
@@ -53,8 +53,8 @@ This project don't aim to target native compilation.
 
 Some of the most common problematic patterns that were covered include :
 
-* **Interopt with Reason/Ocaml module**. ✔️
-* **Interopt with JavaScript module**. ❌
+* **Interop with Reason/Ocaml module**. ✔️
+* **Interop with JavaScript module**. ❌
 * **Dynamic import JavaScript `node_modules` library**. ❌
 * **Race module against each other**. ❌
 
