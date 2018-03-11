@@ -1,0 +1,1 @@
+let getDumbValue = () => 10;

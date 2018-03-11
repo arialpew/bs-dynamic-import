@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Loader should fail if module doesn't exist 1`] = `[Error: Cannot find module './Mocks/Math/???.bs' from 'Loader_test.bs.js']`;
+exports[`load should fail if module doesn't exist 1`] = `[Error: Cannot find module './Mocks/WithReason/???.bs' from 'Loader_test.bs.js']`;
 
-exports[`Loader should load one module 1`] = `"Math-BsDynamicImport"`;
+exports[`load should load one module 1`] = `10`;
+
+exports[`load2 should fail if at least one module doesn't exist 1`] = `[Error: Cannot find module './Mocks/WithOcaml/???.bs' from 'Loader_test.bs.js']`;
+
+exports[`load2 should load two module in parallel 1`] = `21`;
