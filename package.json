@@ -4,8 +4,8 @@
   "author": "Robin Meillet <robin.meillet@epitech.eu>",
   "license": "MIT",
   "scripts": {
-    "make": "cross-env NODE_ENV=production bsb -make-world",
-    "makew": "cross-env NODE_ENV=development bsb -make-world -w",
+    "make": "bsb -make-world",
+    "makew": "bsb -make-world -w",
     "test": "jest",
     "testw": "jest --watchAll",
     "format": "./refmt.sh",
@@ -18,10 +18,7 @@
     "babel-plugin-dynamic-import-node": "1.2.0",
     "babel-preset-env": "1.6.1",
     "bs-platform": "2.2.2",
-    "cross-env": "5.1.4",
-    "jest": "22.4.2",
-    "lerna": "2.9.0",
-    "npm-update-all": "1.0.1"
+    "jest": "22.4.2"
   },
   "dependencies": {},
   "jest": {
