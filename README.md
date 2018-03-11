@@ -14,8 +14,8 @@ Provide a clear path for Reason/Ocaml module to become importable at JavaScript 
   * [Basic example](#basic-example)
   * [Multiple module](#multiple-module)
 * [API](#api)
-  * [Loader](#loader)
-  * [Infix](#infix)
+  * [Create dynamic module](#create-dynamic-module)
+  * [DynamicImport](#dynamicimport)
 * [Alternatives](#alternatives)
 * [Common errors](#common-errors)
 
@@ -120,13 +120,28 @@ DynamicImport.(
 
 2) "DynamicImport.load" take a Promise of importable module and return a Promise of module.
 
-3) After module is dynamically loaded, you can use >>= (bind) operator to traverse the Promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
+3) After module is dynamically loaded, you can use >>= (then bind) operator to traverse the Promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
 
 4) Be carefull, if you use wrong interface or don't provide it, you will face compiler error. For example, "ImportableMath.t" resolve the anonymous module (named "Math" in this example for clarity) with correct interface.
 
 **Note :** if you import wrong module or a path who doesn't exist, compiler will not complain but bundler will.
 
 **Note :** when using "DynamicImport.import" you should provide the ".bs" extension (or configure your bundler to recognize with ".bs.js" extension as JavaScript module).
+
+On final step, if some trouble happen, you can catch the error and react with >>=! operator (catch bind).
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("./ImportableMath.bs")
+  |> load
+  >>= (
+    ((module Math): (module ImportableMath.t)) =>
+      Js.log(Math.addOne(3)) /* 4 */
+  )
+  >>=! (error => Js.log(error))
+):
+```
 
 ## Multiple module
 
@@ -158,9 +173,9 @@ module type t = (module type of X);
 let importable: t = (module X);
 ```
 
-## Loader
+## DynamicImport
 
-[![API](http://image.noelshack.com/fichiers/2018/10/7/1520790331-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520790331-code.png)
+[![API](http://image.noelshack.com/fichiers/2018/10/7/1520802841-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520802841-code.png)
 
 #### type importable('a)
 
@@ -175,10 +190,6 @@ Import dynamic module via path.
 Resolve dynamic module.
 
 There is load2, load3, load4, load5, load6 that do the same thing with tuple of dynamic module, for parallel import.
-
-## Infix
-
-[![API](http://image.noelshack.com/fichiers/2018/10/7/1520788211-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520788211-code.png)
 
 # Alternatives
 
@@ -217,4 +228,44 @@ DynamicImport.(
       Js.log(Math.addOne(3)) /* 4 */
   )
 ):
+```
+
+#### "The value >>= can't be found."
+
+❌ Wrong :
+
+```reason
+/* Main.re */
+import("./ImportableMath.bs")
+|> load
+>>= (
+  ((module Math)) =>
+    Js.log(Math.addOne(3)) /* 4 */
+);
+```
+
+✔️ Good :
+
+```reason
+/* Main.re */
+DynamicImport.(
+  import("./ImportableMath.bs")
+  |> load
+  >>= (
+    ((module Math): (module ImportableMath.t)) =>
+      Js.log(Math.addOne(3)) /* 4 */
+  )
+):
+```
+
+```reason
+/* Main.re */
+open DynamicImport;
+
+import("./ImportableMath.bs")
+|> load
+>>= (
+  ((module Math): (module ImportableMath.t)) =>
+    Js.log(Math.addOne(3)) /* 4 */
+);
 ```
