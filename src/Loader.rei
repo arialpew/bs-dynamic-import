@@ -1,9 +1,5 @@
 type importable('a);
 
-exception ModuleNotLoadable;
-
-exception ModuleNotFound;
-
 [@bs.val] external import : string => Js.Promise.t(importable('a)) = "";
 
 let load: Js.Promise.t(importable('a)) => Js.Promise.t('a);

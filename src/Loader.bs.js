@@ -1,11 +1,6 @@
 
 
-import * as Caml_exceptions from "bs-platform/lib/es6/caml_exceptions.js";
 import * as Infix$BsDynamicImport from "./Infix.bs.js";
-
-var ModuleNotLoadable = Caml_exceptions.create("Loader-BsDynamicImport.ModuleNotLoadable");
-
-var ModuleNotFound = Caml_exceptions.create("Loader-BsDynamicImport.ModuleNotFound");
 
 function load(fetch) {
   return Infix$BsDynamicImport.$great$great$eq(fetch, (function (x) {
@@ -69,8 +64,6 @@ function load6(fetchs) {
 }
 
 export {
-  ModuleNotLoadable ,
-  ModuleNotFound ,
   load ,
   load2 ,
   load3 ,

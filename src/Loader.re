@@ -2,10 +2,6 @@ open Infix;
 
 type importable('a) = {. "importable": 'a};
 
-exception ModuleNotLoadable;
-
-exception ModuleNotFound;
-
 [@bs.val] external import : string => Js.Promise.t(importable('a)) = "";
 
 /* Depack module. */
