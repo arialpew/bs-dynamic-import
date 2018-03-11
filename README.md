@@ -160,7 +160,7 @@ let importable: t = (module X);
 
 ## Loader
 
-[![API](http://image.noelshack.com/fichiers/2018/10/7/1520788049-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520788049-code.png)
+[![API](http://image.noelshack.com/fichiers/2018/10/7/1520790331-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520790331-code.png)
 
 #### type importable('a)
 
