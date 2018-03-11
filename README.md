@@ -155,9 +155,9 @@ If you want to import multiple module in parallel, there is multiple load functi
 
 We expose few infix operator for better experience :
 
-- \\>>= (Promise then bind).
+- \>>= (Promise then bind).
 - =<< (Reverse Promise then bind).
-- \\>>=! (Promise catch bind).
+- \>>=! (Promise catch bind).
 - =<< (Reverse Promise catch bind).
 
 # API
