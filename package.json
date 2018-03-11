@@ -1,5 +1,8 @@
 {
   "name": "bs-dynamic-import",
+  "version": "0.1.0",
+  "author": "Robin Meillet <robin.meillet@epitech.eu>",
+  "license": "MIT",
   "scripts": {
     "make": "cross-env NODE_ENV=production bsb -make-world",
     "makew": "cross-env NODE_ENV=development bsb -make-world -w",
@@ -26,5 +29,21 @@
     "testMatch": [
       "**/__tests__/**/*_test.bs.js"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kMeillet/bs-dynamic-import.git"
+  },
+  "keywords": [
+    "reason",
+    "bucklescript",
+    "dynamic",
+    "module",
+    "import",
+    "code-splitting"
+  ],
+  "bugs": {
+    "url": "https://github.com/kMeillet/bs-dynamic-import/issues"
+  },
+  "homepage": "https://github.com/kMeillet/bs-dynamic-import#readme"
 }
