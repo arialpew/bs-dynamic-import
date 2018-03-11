@@ -2,14 +2,6 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 
-function $less$pipe$pipe(f, g, x) {
-  return Curry._1(f, Curry._1(g, x));
-}
-
-function $pipe$pipe$great(f, g, x) {
-  return Curry._1(g, Curry._1(f, x));
-}
-
 function $great$great$eq(a, b) {
   return a.then((function (param) {
                 return Promise.resolve(Curry._1(b, param));
@@ -35,8 +27,6 @@ function $bang$eq$less$less(a, b) {
 }
 
 export {
-  $less$pipe$pipe ,
-  $pipe$pipe$great ,
   $great$great$eq ,
   $great$great$eq$bang ,
   $eq$less$less ,

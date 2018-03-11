@@ -6,8 +6,6 @@ exception ModuleNotFound;
 
 [@bs.val] external import : string => Js.Promise.t(importable('a)) = "";
 
-let depack: importable('a) => 'a;
-
 let load: Js.Promise.t(importable('a)) => Js.Promise.t('a);
 
 let load2:

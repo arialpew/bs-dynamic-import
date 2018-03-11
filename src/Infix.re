@@ -1,5 +1,3 @@
-let (<||) = (f, g, x) => f(g(x));
-
 let (||>) = (f, g, x) => g(f(x));
 
 let (>>=) = (a, b) => Js.Promise.then_(b ||> Js.Promise.resolve, a);

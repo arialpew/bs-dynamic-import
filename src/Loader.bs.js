@@ -7,10 +7,6 @@ var ModuleNotLoadable = Caml_exceptions.create("Loader-BsDynamicImport.ModuleNot
 
 var ModuleNotFound = Caml_exceptions.create("Loader-BsDynamicImport.ModuleNotFound");
 
-function depack(x) {
-  return x.importable;
-}
-
 function load(fetch) {
   return Infix$BsDynamicImport.$great$great$eq(fetch, (function (x) {
                 return x.importable;
@@ -75,7 +71,6 @@ function load6(fetchs) {
 export {
   ModuleNotLoadable ,
   ModuleNotFound ,
-  depack ,
   load ,
   load2 ,
   load3 ,
