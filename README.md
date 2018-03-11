@@ -50,11 +50,11 @@ When code increase in complexity (more module, more dependency, more assets, ...
 
 JavaScript have [dynamic import proposal](https://github.com/tc39/proposal-dynamic-import) and most bundler support this feature, but we can't use it easily in Reason/Ocaml ; modules are at a different "layer" of language than the rest (functions, let bindings, data structures, etc.).
 
-I will try to explain my propose and the following pattern for dynamic import API in Reason/OCaml.
+I will try to explain my propose and the following pattern for dynamic import API in Reason/Ocaml.
 
 Consider a Math module and Main module :
 
-```ml
+```re
 /* Math.re */
 let addOne = x => x + 1;
 let subOne = x => x - 1;
@@ -68,7 +68,7 @@ Js.log(Math.addOne(3)); /* 4 */
 
 If we want to import Math dynamically instead of staticly, we have to create a new file who reference Math module interface and Math module into "importable" let declaration, that's how the magic work (thanks to [@rickyvetter](https://github.com/rickyvetter)).
 
-```ml
+```re
 /* ImportableMath.re */
 module type t = (module type of Math);
 
@@ -82,7 +82,7 @@ This pattern is exactly the same for all dynamic module and you can choose any f
 
 At any code level, you can now do this :
 
-```ml
+```re
 /* Main.re */
 DynamicImport.(
   import("./ImportableMath.bs")
@@ -125,7 +125,7 @@ We expose few infix operator for better DX :
 
 # API
 
-```ml
+```re
 /* ImportableX.re */
 module type t = (module type of X);
 
@@ -147,7 +147,7 @@ This error mean you forgot to provide interface on anonymous module.
 
 ❌ Wrong :
 
-```ml
+```re
 /* Main.re */
 DynamicImport.(
   import("./ImportableMath.bs")
@@ -161,7 +161,7 @@ DynamicImport.(
 
 ✔️ Good :
 
-```ml
+```re
 /* Main.re */
 DynamicImport.(
   import("./ImportableMath.bs")
