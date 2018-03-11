@@ -274,7 +274,7 @@ import("./ImportableMath.bs")
 );
 ```
 
-#### JavaScript runtime type error (nightmare !)
+#### "JavaScript runtime type error" (nightmare !)
 
 Compiler and bundler can not verify that you have imported the correct module.
 
