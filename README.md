@@ -115,17 +115,17 @@ DynamicImport.(
 ):
 ```
 
-1) DynamicImport.import take a module path (same as JavaScript API) and return a Promise of importable module.
+1) "DynamicImport.import" take a module path (same as JavaScript API) and return a Promise of importable module.
 
-2) DynamicImport.load take a Promise of importable module and return a Promise of module.
+2) "DynamicImport.load" take a Promise of importable module and return a Promise of module.
 
 3) After module is dynamically loaded, you can use >>= (bind) operator to traverse the promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
 
-4) Be carefull, if you use wrong interface or don't provide it, you will face compiler error. For example, ImportableMath.t resolve the anonymous module (named Math in this example) with correct interface.
+4) Be carefull, if you use wrong interface or don't provide it, you will face compiler error. For example, "ImportableMath.t" resolve the anonymous module (named "Math" in this example for clarity) with correct interface.
 
-Note : if you import wrong module or a path who doesn't exist, compiler will not complain but bundler will.
+**Note :** if you import wrong module or a path who doesn't exist, compiler will not complain but bundler will.
 
-Note : when using "import", you should provide the ".bs" extension (or configure your bundler to recognize with ".bs.js" extension as JavaScript module).
+**Note :** when using "DynamicImport.import" you should provide the ".bs" extension (or configure your bundler to recognize with ".bs.js" extension as JavaScript module).
 
 ## Multiple module
 
