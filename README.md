@@ -54,21 +54,21 @@ I will try to explain my propose and the following pattern for dynamic import AP
 
 Consider a Math module and Main module :
 
-```re
+```reason
 /* Math.re */
 let addOne = x => x + 1;
 let subOne = x => x - 1;
 /* ... */
 ```
 
-```re
+```reason
 /* Main.re */
 Js.log(Math.addOne(3)); /* 4 */
 ```
 
 If we want to import Math dynamically instead of staticly, we have to create a new file who reference Math module interface and Math module into "importable" let declaration, that's how the magic work (thanks to [@rickyvetter](https://github.com/rickyvetter)).
 
-```re
+```reason
 /* ImportableMath.re */
 module type t = (module type of Math);
 
@@ -82,7 +82,7 @@ This pattern is exactly the same for all dynamic module and you can choose any f
 
 At any code level, you can now do this :
 
-```re
+```reason
 /* Main.re */
 DynamicImport.(
   import("./ImportableMath.bs")
@@ -125,14 +125,15 @@ We expose few infix operator for better DX :
 
 # API
 
-```re
+```reason
 /* ImportableX.re */
 module type t = (module type of X);
 
 let importable: t = (module X);
 ```
 
-![API][http://image.noelshack.com/fichiers/2018/10/7/1520780568-code.png]
+[![API](http://image.noelshack.com/fichiers/2018/10/7/1520780568-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520780568-code.png)
+
 
 # Alternatives
 
@@ -147,7 +148,7 @@ This error mean you forgot to provide interface on anonymous module.
 
 ❌ Wrong :
 
-```re
+```reason
 /* Main.re */
 DynamicImport.(
   import("./ImportableMath.bs")
@@ -161,7 +162,7 @@ DynamicImport.(
 
 ✔️ Good :
 
-```re
+```reason
 /* Main.re */
 DynamicImport.(
   import("./ImportableMath.bs")
