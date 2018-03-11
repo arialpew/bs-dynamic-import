@@ -66,7 +66,7 @@ In Reason/Ocaml, every file is a module : file name map to module name and you c
 
 With BuckleScript (bs-platform), we can compile Reason/Ocaml module to JavaScript module.
 
-With a bundler (Parcel, Webpack, ...), we can "pack" JavaScript module to create a production-ready bundle with dead-code elimination (a.k.a threeshaking), minification, module concatenation, ...
+With a bundler (Parcel, Webpack, ...), we can "pack" JavaScript module to create a production-ready bundle with dead-code elimination (a.k.a tree shaking), minification, module concatenation, ...
 
 When code increase in complexity (more module, more dependency, more assets, ...) bundle size will growth and it's not ideal to ship the whole bundle, especially for front-end application.
 
