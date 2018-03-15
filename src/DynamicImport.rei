@@ -21,7 +21,7 @@ let resolve3:
     (
       Js.Promise.t(importable('a)),
       Js.Promise.t(importable('b)),
-      Js.Promise.t(importable('b))
+      Js.Promise.t(importable('c))
     )
   ) =>
   Js.Promise.t(('a, 'b, 'c));

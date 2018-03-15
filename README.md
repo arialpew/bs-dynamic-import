@@ -249,7 +249,7 @@ DynamicImport.(
 
 ## DynamicImport
 
-[![API](http://image.noelshack.com/fichiers/2018/10/7/1520802841-code.png)](http://image.noelshack.com/fichiers/2018/10/7/1520802841-code.png)
+[![API](http://image.noelshack.com/fichiers/2018/11/4/1521087048-code.png)](http://image.noelshack.com/fichiers/2018/11/4/1521087048-code.png)
 
 #### type importable('a)
 
