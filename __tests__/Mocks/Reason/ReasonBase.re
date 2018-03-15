@@ -1,3 +1,3 @@
-let lazyValue = () => "A";
+let lazyValue = () => "a";
 
-let value = "B";
+let value = "b";

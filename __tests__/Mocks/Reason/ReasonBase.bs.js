@@ -1,15 +1,12 @@
-
+'use strict';
 
 
 function lazyValue() {
-  return "A";
+  return "a";
 }
 
-var value = "B";
+var value = "b";
 
-export {
-  lazyValue ,
-  value ,
-  
-}
+exports.lazyValue = lazyValue;
+exports.value = value;
 /* No side effect */

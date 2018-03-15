@@ -7,3 +7,5 @@ module type ReasonDefaultExport = (module type of ReasonDefaultExport);
 module type OcamlBase = (module type of OcamlBase);
 
 module type OcamlJsInterop = (module type of OcamlJsInterop);
+
+module type OcamlDefaultExport = (module type of OcamlDefaultExport);

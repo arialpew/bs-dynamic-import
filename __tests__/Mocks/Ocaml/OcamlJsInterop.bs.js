@@ -1,13 +1,15 @@
+'use strict';
 
-
-import * as Ramda from "ramda";
+var Ramda = require("ramda");
 
 function inc(prim) {
   return Ramda.inc(prim);
 }
 
-export {
-  inc ,
-  
+function toUpper(prim) {
+  return Ramda.toUpper(prim);
 }
+
+exports.inc = inc;
+exports.toUpper = toUpper;
 /* ramda Not a pure module */
