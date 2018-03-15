@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`load should fail if module doesn't exist 1`] = `[Error: Cannot find module './Mocks/WithReason/???.bs' from 'Loader_test.bs.js']`;
+exports[`Reason should work when using external JS with BuckleScript interop binding 1`] = `3`;
 
-exports[`load should load one module 1`] = `10`;
+exports[`Reason should work wih basic module 1`] = `"AB"`;
 
-exports[`load2 should fail if at least one module doesn't exist 1`] = `[Error: Cannot find module './Mocks/WithOcaml/???.bs' from 'Loader_test.bs.js']`;
-
-exports[`load2 should load two module in parallel 1`] = `21`;
+exports[`Reason should work with default export 1`] = `"ABC"`;

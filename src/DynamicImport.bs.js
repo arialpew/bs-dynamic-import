@@ -26,63 +26,62 @@ function $bang$eq$less$less(a, b) {
               }));
 }
 
-function load(fetch) {
-  return $great$great$eq(fetch, (function (x) {
-                return x.importable;
-              }));
+var depack = (
+  function(x) {
+    /**
+     * Convert regular Common.js/ES module into BuckleScript JavaScript module (array of value).
+     * We have to be carefull about ordering, Array mean index and code will pick the right index to call the right function.
+     *
+     * When Reason/Ocaml module use a "let default" declaration, that will produce this output :
+     *
+     * --> COMMONJS
+     * exports.lazyValue = lazyValue;
+     * exports.value = value;
+     * exports.$$default = $$default;
+     * exports.default = $$default;
+     * exports.__esModule = true;
+     *
+     * --> ESM
+     * export { lazyValue, value $$default, $$default as default };
+     *
+     *
+     * Without default, we get this :
+     *
+     * --> COMMONJS
+     * exports.lazyValue = lazyValue,
+     * exports.value = value;
+     *
+     * --> ESM
+     * export { lazyValue, value };
+     *
+     * -----------------------------------------------------------------------
+     * => __esModule is provided on Common.js only if default export is used. Enumerable property.
+     * => __esModule is flagged on ESM if you use compiler like Babel but thanks god, not enumerable property.
+     * => We should remove "$$default" key to preserve module order on Common.js/ESM, "default" do the same job.
+     * => We should remove "__esModule" key to preserve module order on Common.js because it's enumerable and that should not.
+     * See : https://github.com/BuckleScript/bucklescript/issues/1987
+     *
+    */
+
+    if (x.__esModule && x.$$default && x.propertyIsEnumerable('__esModule')) { // BuckleScript Common.js with default export
+      delete x.__esModule;
+    }
+
+    delete x.$$default;
+
+    return Object.values(x);
+  }
+);
+
+function resolve(fetch) {
+  return $great$great$eq(fetch, Curry.__1(depack));
 }
 
-function load2(fetchs) {
+function resolve2(fetchs) {
   return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
-                        param[0].importable,
-                        param[1].importable
-                      ];
-              }));
-}
-
-function load3(fetchs) {
-  return $great$great$eq(Promise.all(fetchs), (function (param) {
-                return /* tuple */[
-                        param[0].importable,
-                        param[1].importable,
-                        param[2].importable
-                      ];
-              }));
-}
-
-function load4(fetchs) {
-  return $great$great$eq(Promise.all(fetchs), (function (param) {
-                return /* tuple */[
-                        param[0].importable,
-                        param[1].importable,
-                        param[2].importable,
-                        param[3].importable
-                      ];
-              }));
-}
-
-function load5(fetchs) {
-  return $great$great$eq(Promise.all(fetchs), (function (param) {
-                return /* tuple */[
-                        param[0].importable,
-                        param[1].importable,
-                        param[2].importable,
-                        param[3].importable,
-                        param[4].importable
-                      ];
-              }));
-}
-
-function load6(fetchs) {
-  return $great$great$eq(Promise.all(fetchs), (function (param) {
-                return /* tuple */[
-                        param[0].importable,
-                        param[1].importable,
-                        param[2].importable,
-                        param[3].importable,
-                        param[4].importable,
-                        param[5].importable
+                        Curry._1(depack, param[0]),
+                        Curry._1(depack, param[1])
                       ];
               }));
 }
@@ -92,12 +91,8 @@ export {
   $great$great$eq$bang ,
   $eq$less$less ,
   $bang$eq$less$less ,
-  load ,
-  load2 ,
-  load3 ,
-  load4 ,
-  load5 ,
-  load6 ,
+  resolve ,
+  resolve2 ,
   
 }
-/* No side effect */
+/* depack Not a pure module */

@@ -5,18 +5,20 @@
 
 📦🚀 BuckleScript dynamic import interop on JavaScript environment.
 
-Provide a clear path for Reason/Ocaml module to become importable at JavaScript runtime with type-safety.
+Provide a clear path for Reason/Ocaml module to become importable at runtime, preserve type-safety.
+
+**Note :** This project does not target native compilation but JavaScript compilation.
 
 * [Installation](#installation)
 * [Motivation](#motivation)
   * [Common problems](#common-problems)
+  * [Support](#support)
 * [Example](#example)
   * [Basic example](#basic-example)
   * [Multiple module](#multiple-module)
 * [API](#api)
-  * [Create dynamic module](#create-dynamic-module)
   * [DynamicImport](#dynamicimport)
-* [Alternatives](#alternatives)
+  * [Infix](#infix)
 * [Common errors](#common-errors)
 
 # Installation
@@ -37,107 +39,171 @@ You can now use **"DynamicImport"** module.
 
 # Motivation
 
-The existing syntactic forms for JavaScript importing modules are static declarations. They accept a string literal as the module specifier, and introduce bindings into the local scope via a pre-runtime "linking" process. This is a great design for the 90% case, and supports important use cases such as static analysis, bundling tools, and tree shaking.
+I will try to explain my propose and the following pattern for dynamic import API in Reason/Ocaml.
 
-However, it's also desirable to be able to dynamically load parts of a JavaScript application at runtime. This could be because of factors only known at runtime (such as the user's language), for performance reasons (not loading code until it is likely to be used), or for robustness reasons (surviving failure to load a non-critical module). Such dynamic code-loading has a long history, especially on the web, but also in Node.js (to delay startup costs). The existing import syntax does not support such use cases.
+The existing syntactic forms for JavaScript importing modules are static declarations. They accept a string literal as the module specifier, and introduce bindings into the local scope via a pre-runtime "linking" process. 
+
+This is a great design for the 90% case, and supports important use cases such as static analysis, bundling tools, and tree shaking.
+
+However, it's also desirable to be able to dynamically load parts of a JavaScript application at runtime. This could be because of factors only known at runtime (such as the user's language), for performance reasons (not loading code until it is likely to be used), or for robustness reasons (surviving failure to load a non-critical module). Such dynamic code-loading has a long history, especially on the web, but also in Node.js (to delay startup costs). The existing import syntax does not support such use cases ...
 
 Truly dynamic code loading also enables advanced scenarios, such as racing multiple modules against each other and choosing the first to successfully load.
 
 https://tc39.github.io/proposal-dynamic-import/
 
-This project try to solve this problem when working with Reason/Ocaml (source) --> JavaScript (output) with BuckleScript (bs-platform), because there's no dynamic import in BuckleScript API for the moment.
+In Reason/Ocaml, every file is a module : file name map to module name and you can make module into module. With BuckleScript, we can compile Reason/Ocaml module to JavaScript module.
 
-This project don't aim to target native compilation.
+BuckleScript doesn't provide dynamic import.
+ 
+🔥 **"bs-dynamic-import"** let you use dynamic import right now with BuckleScript.
+
+`When BuckleScript will release dynamic import support, you should drop "bs-dynamic-import" and switch to BuckleScript syntax ; no worries, this project offers a basic API and can be replaced very quickly if needed.`
 
 ## Common problems
 
 Some of the most common problematic patterns that were covered include :
 
-* **Interop with Reason/Ocaml module**. ✔️
-* **Interop with JavaScript module**. ❌
-* **Dynamic import JavaScript `node_modules` library**. ❌
+* **Commonjs/ES6 support**. ✔️
+* **Dynamic import Reason/Ocaml module**. ✔️ 
+* **Dynamic import multiple module in parallel**. ✔️
 * **Race module against each other**. ❌
+
+## Support
+
+- Server-side (Node.js) : Node.js doesn't support dynamic import, you should use [Babel](https://babeljs.io/) with ["babel-plugin-dynamic-import-node"](https://github.com/airbnb/babel-plugin-dynamic-import-node). [#example](https://github.com/kMeillet/bs-dynamic-import)
+
+- Client-side (web) : you should use a bundler ([Webpack 4](https://webpack.js.org/) and [Parcel](https://github.com/parcel-bundler/parcel) support dynamic import with zero-configuration, Rollup require experimental flag). [#example](https://github.com/kMeillet/reason-loadable/tree/master/examples)
 
 # Example
 
 ## Basic example
-
-In Reason/Ocaml, every file is a module : file name map to module name and you can make module into module.
-
-With BuckleScript (bs-platform), we can compile Reason/Ocaml module to JavaScript module.
-
-With a bundler (Parcel, Webpack, ...), we can "pack" JavaScript module to create a production-ready bundle with dead-code elimination (a.k.a tree shaking), minification, module concatenation, ...
-
-When code increase in complexity (more module, more dependency, more assets, ...) bundle size will growth and it's not ideal to ship the whole bundle, especially for front-end application.
-
-JavaScript have [dynamic import proposal](https://github.com/tc39/proposal-dynamic-import) and most bundler support this feature, but we can't use it easily in Reason/Ocaml ; modules are at a different "layer" of language than the rest (functions, let bindings, data structures, etc.).
-
-I will try to explain my propose and the following pattern for dynamic import API in Reason/Ocaml.
 
 Consider a Math module and Main module :
 
 ```reason
 /* Math.re */
 let addOne = x => x + 1;
-let subOne = x => x - 1;
 /* ... */
 ```
 
 ```reason
 /* Main.re */
-Js.log(Math.addOne(3)); /* 4 */
+3 |> Math.addOne |> Js.log; /* 4 */
 ```
 
-If we want to import Math dynamically instead of staticly, we have to create a new file who reference Math module interface and Math module into "importable" let declaration, that's how the magic work (thanks to [@rickyvetter](https://github.com/rickyvetter)).
+**Note :** Pipe operator **"|>"** help chaining function and avoid parenthesis ceremony.
 
-```reason
-/* ImportableMath.re */
-module type t = (module type of Math);
-
-let importable: t = (module Math);
-```
-
-This pattern is exactly the same for all dynamic module and you can choose any file name ("ImportableModule" is a good practice).
-
-- module type t = interface of the module.
-- let importable = refer to module himself.
-
-At any code level, you can now do this :
+Module are static (know at compile time). If you want to import Math dynamically (on runtime), use **"DynamicImport"** module.
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
 DynamicImport.(
-  import("./ImportableMath.bs")
-  |> load
-  >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+  import("./Math.bs.js")
+  |> resolve
+  |> Js.Promise.then_(((module AnonymouModule): (module MathType)) =>
+      3 |> AnonymouModule.addOne |> Js.log |> Js.Promise.resolve /* 4 */
   )
 );
 ```
 
-1) **"DynamicImport.import"** take a module path (same as JavaScript API) and return a Promise of importable module.
+**Note :** You must always import BuckleScript output (bs.js), don't try to import Reason/Ocaml file (that will not work).
 
-2) **"DynamicImport.load"** take a Promise of importable module and return a Promise of module.
+1) First, we declare a module type who refer to Math module type himself.
 
-3) After module is dynamically loaded, you can use **">>="** (then bind) operator to traverse the Promise and "repack" the anonymous module with correct interface. You can use any module name (think as anonymous module).
+2) We open **"DynamicImport"** module locally to avoid name collision. **"DynamicImport"** module come with multiple functions and infix operator but the most important part of the API are **"import"** and **"resolve"** function.
 
-4) Be carefull, if you use wrong interface or don't provide it, you will face compiler error. For example, "ImportableMath.t" resolve the anonymous module (named "Math" in this example for clarity) with correct interface.
+3) **"DynamicImport.import"** share signature with dynamic import JavaScript API : take a module path and return a Promise of module. This Promise should be passed to **"DynamicImport.resolve"** when you want to resolve module.
 
-**Note :** if you import wrong module or a path who doesn't exist, compiler will not complain but bundler will.
+**Note :** when using **"DynamicImport.import"** you should provide ".bs.js" extension (or configure your bundler to recognize ".bs.js" extension as ".js" extension).
 
-**Note :** when using **"DynamicImport.import"** you should provide the ".bs" extension (or configure your bundler to recognize ".bs.js" extension as JavaScript module).
+**Note :** if you import wrong module or a path who doesn't exist, compiler will not complain so be carefull about this situation when you move/rename file, like with JavaScript module.
 
-On final step, if some trouble happen, you can catch the error and react with **">>=!"** operator (catch bind) ; always return the same type of expected result.
+4) After module is dynamically imported, you can use **"Js.Promise.then_"** and "repack" the anonymous module with correct module type. If you use wrong module type or forgot to provide it, you will face compiler error.
+
+**Note :** Using **"Js.Promise.then_"** is verbose (you have to wrap result with **"Js.Promise.resolve"** every time), we provide **">>="** (then bind) operator to traverse Promise and apply your function (return value will be wrapped into Promise).
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
 DynamicImport.(
-  import("./ImportableMath.bs")
-  |> load
+  import("./Math.bs.js")
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module AnonymouModule): (module MathType)) =>
+      3 |> AnonymouModule.addOne |> Js.log /* 4 */
+  )
+);
+```
+
+🔥 Look much better !
+
+Finally, you can catch error with **"Js.Promise.catch"** - and of course we provide **">>=!"** (catch bind) operator (return value will be wrapped into Promise).
+
+```reason
+/* Main.re */
+module type MathType = (module type of Math);
+
+DynamicImport.(
+  import("./Math.bs.js")
+  |> resolve
+  >>= (
+    ((module AnonymouModule): (module MathType)) =>
+      3 |> AnonymouModule.addOne |> Js.log /* 4 */
+  )
+  >>=! (error => Js.log(error))
+);
+```
+
+Now, how can we dynamically import JavaScript library ? Write 1:1 binding like normal way and expose what do you want.
+
+```sh
+npm install ramda --save
+```
+
+```reason
+/* Ramda.re */
+[@bs.module "ramda"] external inc : int => int = "inc";
+
+let inc = inc;
+```
+
+```reason
+/* Main.re */
+module type RamdaType = (module type of Ramda);
+
+DynamicImport.(
+  import("./Ramda.bs.js")
+  |> resolve
+  >>= (
+    ((module Ramda): (module RamdaType)) =>
+      3 |> Ramda.inc |> Js.log /* 4 */
+  )
+  >>=! (error => Js.log(error))
+);
+```
+
+What about default export compatibility ?
+
+```reason
+/* Math.re */
+let addOne = x => x + 1;
+/* ... */
+let default = () => "Default export !";
+```
+
+```reason
+/* Main.re */
+module type MathType = (module type of Math);
+
+DynamicImport.(
+  import("./Math.bs.js")
+  |> resolve
+  >>= (
+    ((module Math): (module MathType)) =>
+      Ramda.default() |> Js.log /* "Default export !" */
   )
   >>=! (error => Js.log(error))
 );
@@ -145,35 +211,41 @@ DynamicImport.(
 
 ## Multiple module
 
-If you want to import multiple module in parallel, there is multiple load function who work with tuple :
+If you want to import multiple module in parallel, there is multiple resolve function who work with tuple :
 
-- DynamicImport.load2
-- DynamicImport.load3
-- DynamicImport.load4
-- DynamicImport.load5
-- DynamicImport.load6
-
-We expose few infix operator for better experience :
-
-- \>>= (Promise then bind).
-- =<< (Reverse Promise then bind).
-- \>>=! (Promise catch bind).
-- !=<< (Reverse Promise catch bind).
-
-Underlying, these operator work with any **Js.Promise.t**.
-
-# API
-
-## Create dynamic module
-
-To create a dynamic version of a static module X, you need to create new file with this pattern :
+- DynamicImport.resolve2
+- DynamicImport.resolve3
+- DynamicImport.resolve4
+- DynamicImport.resolve5
+- DynamicImport.resolve6
 
 ```reason
-/* ImportableX.re */
-module type t = (module type of X);
+/* Main.re */
+module type MathType = (module type of Math);
+module type CurrencyType = (module type of Currency);
 
-let importable: t = (module X);
+DynamicImport.(
+  resolve2((
+    import("./Math.bs.js"),
+    import("./Currency.bs.js")
+  ))
+  >>= (
+    (
+      (
+        (module Math): (module MathType),
+        (module Currency): (module CurrencyType)
+      )
+    ) =>
+      3
+      |> Math.addOne
+      |> Currency.toDollar
+      |> Js.log
+  )
+  >>=! (error => Js.log(error))
+);
 ```
+
+# API
 
 ## DynamicImport
 
@@ -181,39 +253,45 @@ let importable: t = (module X);
 
 #### type importable('a)
 
-Represent a dynamic module who can be imported later.
+Dynamic module type.
 
 #### import: string => Js.Promise.t(importable('a))
 
-Import dynamic module via relative path, from the current module.
+Import dynamic module.
 
-#### load: Js.Promise.t(importable('a)) => Js.Promise.t('a)
+#### resolve: Js.Promise.t(importable('a)) => Js.Promise.t('a)
 
 Resolve dynamic module.
 
-There is load2, load3, load4, load5, load6 that do the same thing with tuple of dynamic module, for parallel import.
+There is resolve2, resolve3, resolve4, resolve5, resolve6 that do the same thing with tuple for parallel import.
 
-# Alternatives
+## Infix
 
-- Bs.raw.
-- Obj.magic.
+We expose 4 infix operator for better experience :
+
+- \>>= (Promise then bind).
+- =<< (Reverse Promise then bind).
+- \>>=! (Promise catch bind).
+- !=<< (Reverse Promise catch bind).
+
+Underlying, these operator work with any **"Js.Promise.t"**.
 
 # Common errors
 
 #### "The signature for this packaged module couldn't be inferred."
 
-This error mean you forgot to provide interface on resolved module.
+This error mean you forgot to provide module type on resolved module.
 
 ❌ Wrong :
 
 ```reason
 /* Main.re */
 DynamicImport.(
-  import("./ImportableMath.bs")
-  |> load
+  import("./Math.bs.js")
+  |> resolve
   >>= (
-    ((module Math)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math)) => /* Signature missing ! */
+      3 |> Math.addOne |> Js.log /* 4 */
   )
 );
 ```
@@ -222,12 +300,14 @@ DynamicImport.(
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math); /* Signature */
+
 DynamicImport.(
-  import("./ImportableMath.bs")
-  |> load
+  import("./Math.bs.js")
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math): (module MathType)) => /* Provide signature */
+      3 |> Math.addOne |> Js.log /* 4 */
   )
 );
 ```
@@ -240,11 +320,14 @@ You should use local or global open to have **"DynamicImport"** module in scope.
 
 ```reason
 /* Main.re */
-import("./ImportableMath.bs")
-|> load
+module type MathType = (module type of Math);
+
+/* Where is DynamicImport ? */
+import("./Math.bs.js")
+|> resolve
 >>= (
-  ((module Math)) =>
-    Js.log(Math.addOne(3)) /* 4 */
+  ((module Math): (module MathType)) =>
+    3 |> Math.addOne |> Js.log /* 4 */
 );
 ```
 
@@ -252,112 +335,129 @@ import("./ImportableMath.bs")
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
+/* Local open */
 DynamicImport.(
-  import("./ImportableMath.bs")
-  |> load
+  import("./Math.bs.js")
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math): (module MathType)) =>
+    3 |> Math.addOne |> Js.log /* 4 */
   )
 );
 ```
 
 ```reason
 /* Main.re */
+/* Global open */
 open DynamicImport;
 
-import("./ImportableMath.bs")
-|> load
+module type MathType = (module type of Math);
+
+import("./Math.bs.js")
+|> resolve
 >>= (
-  ((module Math): (module ImportableMath.t)) =>
-    Js.log(Math.addOne(3)) /* 4 */
-);
+  ((module Math): (module MathType)) =>
+    3 |> Math.addOne |> Js.log /* 4 */
+):
 ```
 
-#### "JavaScript runtime type error" (nightmare !)
+#### "JavaScript runtime type error (cannot find length, 0 is not a function)" (nightmare !)
 
-Compiler and bundler can not verify that you have imported the correct module.
+Compiler can not verify that you have imported the right module or check if module path is correct.
 
 That's your responsability and you should be cautious about this because it's very error prone.
 
-Always import the dynamic module compiled by BuckleScript (ImportableX.bs.js file), never import Reason/Ocaml module (X.re or X.ml) or static JavaScript module (X.js).
+Always import file that will be compiled by BuckleScript (".bs.js" file), never import Reason/Ocaml file.
 
-On last side, you can catch any error with **">>=!"** operator (catch bind) ; you should return the same type from last **">>="**.
+You can catch any error with **">>=!"** operator (catch bind) and apply custom logic if something fail on runtime.
 
 ❌ Wrong :
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
 DynamicImport.(
-  import("./Math.re") /* Can't */
-  |> load
+  import("./Mat.bs.js") /* Bad path, file is missing */
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math): (module MathType)) =>
+      3 |> Math.addOne |> Js.log /* 4 */
   )
 );
 ```
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
 DynamicImport.(
-  import("./Math.js") /* Can't */
-  |> load
+  import("./Math.re") /* Can't, Reason file */
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math): (module MathType)) =>
+      3 |> Math.addOne |> Js.log /* 4 */
   )
 );
 ```
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
 DynamicImport.(
-  import("./Math.ml") /* Can't */
-  |> load
+  import("./Math.js") /* Can't, non-BuckleScript output */
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math): (module MathType)) =>
+      3 |> Math.addOne |> Js.log /* 4 */
   )
 );
 ```
 
 ```reason
 /* Main.re */
-DynamicImport.(
-  import("jquery") /* Can't */
-  |> load
-  >>= (
-    ((module JQuery): (module ImportableJQuery.t)) =>
-      Js.log(JQuery.$("body"))
-  )
-);
-```
+module type MathType = (module type of Math);
 
-```reason
-/* Main.re */
 DynamicImport.(
-  import("jquery") /* Can't */
-  |> load
+  import("./Math.ml") /* Can't, Ocaml file */
+  |> resolve
   >>= (
-    ((module JQuery): (module ImportableJQuery.t)) =>
-      Js.log(JQuery.$("body"))
+    ((module Math): (module MathType)) =>
+      3 |> Math.addOne |> Js.log /* 4 */
   )
-  >>=! (error => error) /* Can't, should be unit because on >>= we return an unit ! */
 );
-```
 
 ✔️ Good :
 
 ```reason
 /* Main.re */
+module type MathType = (module type of Math);
+
 DynamicImport.(
-  import("./ImportableMath.bs")
-  |> load
+  import("./Math.bs.js") /* Can, BuckleScript output from Reason/Ocaml module */
+  |> resolve
   >>= (
-    ((module Math): (module ImportableMath.t)) =>
-      Js.log(Math.addOne(3)) /* 4 */
+    ((module Math): (module MathType)) =>
+      3 |> Math.addOne |> Js.log /* 4 */
   )
-  >>=! (_error => Js.log("Something goes wrong, reloading ..."))
+  >>=! ((_error) => Js.log("Something goes wrong, reloading ..."))
+);
+```
+
+```reason
+/* Main.re */
+module type BsMathType = (module type of BsMath);
+
+DynamicImport.(
+  import("bs-math") /* Can, BuckleScript output from Reason/Ocaml module */
+  |> resolve
+  >>= (
+    ((module BsMath): (module BsMathType)) =>
+      3 |> BsMath.sqrt |> Js.log /* 1.73 */
+  )
+  >>=! ((_error) => Js.log("Something goes wrong, reloading ..."))
 );
 ```
