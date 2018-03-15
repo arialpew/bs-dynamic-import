@@ -20,7 +20,7 @@
     "babel-preset-env": "1.6.1",
     "bs-platform": "2.2.2",
     "jest": "22.4.2",
-    "ramda": "^0.25.0"
+    "ramda": "0.25.0"
   },
   "dependencies": {},
   "jest": {
