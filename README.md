@@ -63,7 +63,7 @@ BuckleScript doesn't provide dynamic import.
 
 Some of the most common problematic patterns that were covered include :
 
-* **Commonjs/ES6 support**. ✔️
+* **Commonjs/ESM support**. ✔️
 * **Dynamic import Reason/Ocaml module**. ✔️ 
 * **Dynamic import multiple module in parallel**. ✔️
 * **Race module against each other**. ❌
