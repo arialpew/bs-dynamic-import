@@ -1,6 +1,6 @@
+'use strict';
 
-
-import * as Curry from "bs-platform/lib/es6/curry.js";
+var Curry = require("bs-platform/lib/js/curry.js");
 
 function $great$great$eq(a, b) {
   return a.then((function (param) {
@@ -26,72 +26,81 @@ function $bang$eq$less$less(a, b) {
               }));
 }
 
-var depack = (
-  function(x) {
-    /**
-     * Convert regular Common.js/ES module into BuckleScript JavaScript module (array of value).
-     * We have to care about ordering, array mean index and BuckleScript will pick the right index to call the right function.
-     *
-     * When Reason/Ocaml module use a "let default" declaration, that will produce this output :
-     *
-     * --> COMMONJS
-     * exports.lazyValue = lazyValue;
-     * exports.value = value;
-     * exports.$$default = $$default;
-     * exports.default = $$default;
-     * exports.__esModule = true;
-     *
-     * --> ESM
-     * export { lazyValue, value $$default, $$default as default };
-     *
-     * Without default declaration, we get this :
-     *
-     * --> COMMONJS
-     * exports.lazyValue = lazyValue,
-     * exports.value = value;
-     *
-     * --> ESM
-     * export { lazyValue, value };
-     *
-     * -----------------------------------------------------------------------
-     * => __esModule is provided on Common.js only if default export is used. Enumerable property.
-     * => __esModule is flagged on ESM if you use compiler like Babel but thanks god, not enumerable property.
-     * => We should remove "$$default" key to preserve module order on Common.js/ESM, "default" do the same job.
-     * => We should remove "__esModule" key to preserve module order on Common.js because it's enumerable and that should not.
-     * See : https://github.com/BuckleScript/bucklescript/issues/1987
-     *
-    */
-
-    if (x.__esModule && x.$$default && x.propertyIsEnumerable('__esModule')) {
-      delete x.__esModule;
-    }
-
-    delete x.$$default;
-
-    return Object.values(x);
+function depack(x) {
+  if (x.propertyIsEnumerable("$$default") && x.propertyIsEnumerable("__esModule") && x.__esModule) {
+    (( delete x.__esModule ));
   }
-);
+  (( delete x.$$default ));
+  return Object.values(x);
+}
 
 function resolve(fetch) {
-  return $great$great$eq(fetch, Curry.__1(depack));
+  return $great$great$eq(fetch, depack);
 }
 
 function resolve2(fetchs) {
   return $great$great$eq(Promise.all(fetchs), (function (param) {
                 return /* tuple */[
-                        Curry._1(depack, param[0]),
-                        Curry._1(depack, param[1])
+                        depack(param[0]),
+                        depack(param[1])
                       ];
               }));
 }
 
-export {
-  $great$great$eq ,
-  $great$great$eq$bang ,
-  $eq$less$less ,
-  $bang$eq$less$less ,
-  resolve ,
-  resolve2 ,
-  
+function resolve3(fetchs) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
+                return /* tuple */[
+                        depack(param[0]),
+                        depack(param[1]),
+                        depack(param[2])
+                      ];
+              }));
 }
-/* depack Not a pure module */
+
+function resolve4(fetchs) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
+                return /* tuple */[
+                        depack(param[0]),
+                        depack(param[1]),
+                        depack(param[2]),
+                        depack(param[3])
+                      ];
+              }));
+}
+
+function resolve5(fetchs) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
+                return /* tuple */[
+                        depack(param[0]),
+                        depack(param[1]),
+                        depack(param[2]),
+                        depack(param[3]),
+                        depack(param[4])
+                      ];
+              }));
+}
+
+function resolve6(fetchs) {
+  return $great$great$eq(Promise.all(fetchs), (function (param) {
+                return /* tuple */[
+                        depack(param[0]),
+                        depack(param[1]),
+                        depack(param[2]),
+                        depack(param[3]),
+                        depack(param[4]),
+                        depack(param[5])
+                      ];
+              }));
+}
+
+exports.$great$great$eq = $great$great$eq;
+exports.$great$great$eq$bang = $great$great$eq$bang;
+exports.$eq$less$less = $eq$less$less;
+exports.$bang$eq$less$less = $bang$eq$less$less;
+exports.resolve = resolve;
+exports.resolve2 = resolve2;
+exports.resolve3 = resolve3;
+exports.resolve4 = resolve4;
+exports.resolve5 = resolve5;
+exports.resolve6 = resolve6;
+/* No side effect */
