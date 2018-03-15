@@ -30,7 +30,7 @@ var depack = (
   function(x) {
     /**
      * Convert regular Common.js/ES module into BuckleScript JavaScript module (array of value).
-     * We have to be carefull about ordering, Array mean index and code will pick the right index to call the right function.
+     * We have to care about ordering, array mean index and BuckleScript will pick the right index to call the right function.
      *
      * When Reason/Ocaml module use a "let default" declaration, that will produce this output :
      *
@@ -44,8 +44,7 @@ var depack = (
      * --> ESM
      * export { lazyValue, value $$default, $$default as default };
      *
-     *
-     * Without default, we get this :
+     * Without default declaration, we get this :
      *
      * --> COMMONJS
      * exports.lazyValue = lazyValue,
@@ -63,7 +62,7 @@ var depack = (
      *
     */
 
-    if (x.__esModule && x.$$default && x.propertyIsEnumerable('__esModule')) { // BuckleScript Common.js with default export
+    if (x.__esModule && x.$$default && x.propertyIsEnumerable('__esModule')) {
       delete x.__esModule;
     }
 
