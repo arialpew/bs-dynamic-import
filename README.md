@@ -118,7 +118,7 @@ DynamicImport.(
 
 **Note :** when using **"DynamicImport.import"** you should provide ".bs.js" extension (or configure your bundler to recognize ".bs.js" extension as ".js" extension).
 
-**Note :** if you import wrong module or a path who doesn't exist, compiler will not complain so be carefull about this situation when you move/rename file, like with JavaScript module.
+**Note :** if you import wrong module or a path who doesn't exist, compiler will not complain so be careful about this situation when you move/rename file, like with JavaScript module.
 
 4) After module is dynamically imported, you can use **"Js.Promise.then_"** and "repack" the anonymous module with correct module type. If you use wrong module type or forgot to provide it, you will face compiler error.
 
@@ -360,7 +360,7 @@ import("./Math.bs.js")
 >>= (
   ((module Math): (module MathType)) =>
     3 |> Math.addOne |> Js.log /* 4 */
-):
+);
 ```
 
 #### "JavaScript runtime type error (cannot find length, 0 is not a function)" (nightmare !)
