@@ -157,7 +157,7 @@ DynamicImport.(
 );
 ```
 
-Now, how can we dynamically import JavaScript library ? Write 1:1 binding like normal way and expose what do you want.
+Now, how can we dynamically import JavaScript library ? Write 1:1 binding like normal way and expose what you want.
 
 ```sh
 npm install ramda --save
