@@ -26,7 +26,7 @@ let (<$!>) = (a, b) => Js.Promise.catch(b ||> Js.Promise.resolve, a);
 let (>>=) = (a, b) => Js.Promise.then_(b, a);
 
 /* Catch. */
-let (>>=!) = (a, b) => Js.Promise.catch(b , a);
+let (>>=!) = (a, b) => Js.Promise.catch(b, a);
 
 /* Reverse then. */
 let (=<<) = (a, b) => Js.Promise.then_(a, b);
@@ -65,7 +65,7 @@ let (!=<<) = (a, b) => Js.Promise.catch(a, b);
  * => We should remove "$$default" key to preserve module order on Common.js/ESM, "default" do the same job.
  * => We should remove "__esModule" key to preserve module order on Common.js because it's enumerable and that should not.
  * See : https://github.com/BuckleScript/bucklescript/issues/1987
- * 
+ *
  * Module order is guaranteed by module interface and compiler inference.
 **/
 let depack = x => {
