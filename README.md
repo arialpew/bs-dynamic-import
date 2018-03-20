@@ -122,7 +122,7 @@ DynamicImport.(
 
 4) After module is dynamically imported, you can use **"Js.Promise.then_"** and "repack" the anonymous module with correct module type. If you use wrong module type or forgot to provide it, you will face compiler error.
 
-**Note :** Using **"Js.Promise.then_"** is verbose (you have to wrap result with **"Js.Promise.resolve"** every time), we provide **">>="** (then bind) operator to traverse Promise and apply your function (return value will be wrapped into Promise).
+**Note :** Using **"Js.Promise.then_"** is verbose (you have to wrap result with **"Js.Promise.resolve"** every time), we provide **"<$>"** (map) operator to traverse Promise and apply your function (return value will be wrapped into Promise).
 
 ```reason
 /* Main.re */
@@ -131,7 +131,7 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module AnonymouModule): (module MathType)) =>
       3 |> AnonymouModule.addOne |> Js.log /* 4 */
   )
@@ -140,7 +140,7 @@ DynamicImport.(
 
 🔥 Look much better !
 
-Finally, you can catch error with **"Js.Promise.catch"** - and of course we provide **">>=!"** (catch bind) operator (return value will be wrapped into Promise).
+Finally, you can catch error with **"Js.Promise.catch"** - and of course we provide **"<$!>"** (map catch) operator (return value will be wrapped into Promise).
 
 ```reason
 /* Main.re */
@@ -149,11 +149,11 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module AnonymouModule): (module MathType)) =>
       3 |> AnonymouModule.addOne |> Js.log /* 4 */
   )
-  >>=! (error => Js.log(error))
+  <$!> (error => Js.log(error))
 );
 ```
 
@@ -177,11 +177,11 @@ module type RamdaType = (module type of Ramda);
 DynamicImport.(
   import("./Ramda.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module Ramda): (module RamdaType)) =>
       3 |> Ramda.inc |> Js.log /* 4 */
   )
-  >>=! (error => Js.log(error))
+  <$!> (error => Js.log(error))
 );
 ```
 
@@ -201,11 +201,11 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
       Ramda.default() |> Js.log /* "Default export !" */
   )
-  >>=! (error => Js.log(error))
+  <$!> (error => Js.log(error))
 );
 ```
 
@@ -229,7 +229,7 @@ DynamicImport.(
     import("./Math.bs.js"),
     import("./Currency.bs.js")
   ))
-  >>= (
+  <$> (
     (
       (
         (module Math): (module MathType),
@@ -241,7 +241,7 @@ DynamicImport.(
       |> Currency.toDollar
       |> Js.log
   )
-  >>=! (error => Js.log(error))
+  <$!> (error => Js.log(error))
 );
 ```
 
@@ -249,7 +249,7 @@ DynamicImport.(
 
 ## DynamicImport
 
-[![API](http://image.noelshack.com/fichiers/2018/11/4/1521087048-code.png)](http://image.noelshack.com/fichiers/2018/11/4/1521087048-code.png)
+[![API](http://image.noelshack.com/fichiers/2018/12/2/1521519530-code.png)](http://image.noelshack.com/fichiers/2018/12/2/1521519530-code.png)
 
 #### type importable('a)
 
@@ -267,12 +267,14 @@ There is resolve2, resolve3, resolve4, resolve5, resolve6 that do the same thing
 
 ## Infix
 
-We expose 4 infix operator for better experience :
+We expose 6 infix operator for better experience :
 
-- \>>= (Promise then bind).
-- =<< (Reverse Promise then bind).
-- \>>=! (Promise catch bind).
-- !=<< (Reverse Promise catch bind).
+- <$> (Promise map).
+- <$!> (Promise map catch).
+- \>>= (Promise then).
+- =<< (Reverse Promise then).
+- \>>=! (Promise catch).
+- !=<< (Reverse Promise catch).
 
 Underlying, these operator work with any **"Js.Promise.t"**.
 
@@ -289,7 +291,7 @@ This error mean you forgot to provide module type on resolved module.
 DynamicImport.(
   import("./Math.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module Math)) => /* Signature missing ! */
       3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -305,7 +307,7 @@ module type MathType = (module type of Math); /* Signature */
 DynamicImport.(
   import("./Math.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) => /* Provide signature */
       3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -325,7 +327,7 @@ module type MathType = (module type of Math);
 /* Where is DynamicImport ? */
 import("./Math.bs.js")
 |> resolve
->>= (
+<$> (
   ((module Math): (module MathType)) =>
     3 |> Math.addOne |> Js.log /* 4 */
 );
@@ -341,7 +343,7 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.bs.js")
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
     3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -357,7 +359,7 @@ module type MathType = (module type of Math);
 
 import("./Math.bs.js")
 |> resolve
->>= (
+<$> (
   ((module Math): (module MathType)) =>
     3 |> Math.addOne |> Js.log /* 4 */
 );
@@ -371,7 +373,7 @@ That's your responsability and you should be cautious about this because it's ve
 
 Always import file that will be compiled by BuckleScript (".bs.js" file), never import Reason/Ocaml file.
 
-You can catch any error with **">>=!"** operator (catch bind) and apply custom logic if something fail on runtime.
+You can catch any error with **"<$!>"** operator (map catch) and apply custom logic if something fail on runtime.
 
 ❌ Wrong :
 
@@ -382,7 +384,7 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Mat.bs.js") /* Bad path, file is missing */
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
       3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -396,7 +398,7 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.re") /* Can't, Reason file */
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
       3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -410,7 +412,7 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.js") /* Can't, non-BuckleScript output */
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
       3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -424,7 +426,7 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.ml") /* Can't, Ocaml file */
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
       3 |> Math.addOne |> Js.log /* 4 */
   )
@@ -439,11 +441,11 @@ module type MathType = (module type of Math);
 DynamicImport.(
   import("./Math.bs.js") /* Can, BuckleScript output from Reason/Ocaml module */
   |> resolve
-  >>= (
+  <$> (
     ((module Math): (module MathType)) =>
       3 |> Math.addOne |> Js.log /* 4 */
   )
-  >>=! ((_error) => Js.log("Something goes wrong, reloading ..."))
+  <$!> ((_error) => Js.log("Something goes wrong, reloading ..."))
 );
 ```
 
@@ -454,10 +456,10 @@ module type BsMathType = (module type of BsMath);
 DynamicImport.(
   import("bs-math") /* Can, BuckleScript output from Reason/Ocaml module */
   |> resolve
-  >>= (
+  <$> (
     ((module BsMath): (module BsMathType)) =>
       3 |> BsMath.sqrt |> Js.log /* 1.73 */
   )
-  >>=! ((_error) => Js.log("Something goes wrong, reloading ..."))
+  <$!> ((_error) => Js.log("Something goes wrong, reloading ..."))
 );
 ```
