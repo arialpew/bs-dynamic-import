@@ -1,6 +1,6 @@
 {
   "name": "bs-dynamic-import",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Robin Meillet <robin.meillet@epitech.eu>",
   "description": "BuckleScript dynamic import interop on JavaScript environment",
   "license": "MIT",
