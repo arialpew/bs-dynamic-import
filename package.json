@@ -17,7 +17,7 @@
     "@glennsl/bs-jest": "0.4.2",
     "babel-core": "6.26.0",
     "babel-plugin-dynamic-import-node": "1.2.0",
-    "babel-preset-env": "1.6.1",
+    "babel-preset-env": "1.7.0",
     "bs-platform": "2.2.3",
     "jest": "22.4.3",
     "ramda": "0.25.0"
