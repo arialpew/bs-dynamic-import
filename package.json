@@ -19,7 +19,7 @@
     "babel-plugin-dynamic-import-node": "1.2.0",
     "babel-preset-env": "1.6.1",
     "bs-platform": "2.2.3",
-    "jest": "22.4.3",
+    "jest": "23.6.0",
     "ramda": "0.25.0"
   },
   "dependencies": {},
