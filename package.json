@@ -14,7 +14,7 @@
     "clean": "bsb -clean-world"
   },
   "devDependencies": {
-    "@glennsl/bs-jest": "0.4.2",
+    "@glennsl/bs-jest": "0.4.4",
     "babel-core": "6.26.0",
     "babel-plugin-dynamic-import-node": "1.2.0",
     "babel-preset-env": "1.6.1",
