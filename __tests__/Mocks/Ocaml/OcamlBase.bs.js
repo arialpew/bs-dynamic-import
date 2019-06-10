@@ -1,7 +1,7 @@
 'use strict';
 
 
-function lazyValue() {
+function lazyValue(param) {
   return "a";
 }
 

@@ -38,8 +38,8 @@ function depack(x) {
   return Object.values(x);
 }
 
-function resolve(fetch) {
-  return $less$$great(fetch, depack);
+function resolve($$fetch) {
+  return $less$$great($$fetch, depack);
 }
 
 function resolve2(fetchs) {
