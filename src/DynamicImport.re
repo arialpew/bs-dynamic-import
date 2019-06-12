@@ -3,15 +3,15 @@ type importable('a) = {
   .
   "__esModule": bool,
   "$$default": bool,
-  [@bs.meth] "propertyIsEnumerable": string => bool
+  [@bs.meth] "propertyIsEnumerable": string => bool,
 };
 
 /* Depack module (internal). */
 [@bs.scope "Object"] [@bs.val]
-external depack : importable('a) => 'a = "values";
+external depack: importable('a) => 'a = "values";
 
 /* Import module. */
-[@bs.val] external import : string => Js.Promise.t(importable('a)) = "";
+[@bs.val] external import: string => Js.Promise.t(importable('a)) = "";
 
 /* Pipe (internal). */
 let (||>) = (f, g, x) => g(f(x));
@@ -71,7 +71,8 @@ let (!=<<) = (a, b) => Js.Promise.catch(a, b);
 let depack = x => {
   if (x##propertyIsEnumerable("$$default")
       && x##propertyIsEnumerable("__esModule")
-      && x##__esModule) {
+      &&
+      x##__esModule) {
     [%raw {| delete x.__esModule |}] |> ignore;
   };
   [%raw {| delete x.$$default |}] |> ignore;
@@ -107,7 +108,7 @@ let resolve5 = fetchs =>
       depack(b),
       depack(c),
       depack(d),
-      depack(e)
+      depack(e),
     )
   );
 
@@ -122,6 +123,6 @@ let resolve6 = fetchs =>
       depack(c),
       depack(d),
       depack(e),
-      depack(f)
+      depack(f),
     )
   );

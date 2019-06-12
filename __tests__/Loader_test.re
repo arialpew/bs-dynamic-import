@@ -9,53 +9,53 @@ describe("Reason", () => {
     import("./Mocks/Reason/ReasonBase.bs.js")
     |> resolve
     <$> (
-      ((module X): (module Importable.ReasonBase)) =>
+      (module X: Importable.ReasonBase) =>
         X.lazyValue() ++ X.value |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should work with BuckleScript interop binding export", () =>
     import("./Mocks/Reason/ReasonJsInterop.bs.js")
     |> resolve
     <$> (
-      ((module X): (module Importable.ReasonJsInterop)) =>
+      (module X: Importable.ReasonJsInterop) =>
         X.inc(2) |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should work with default export", () =>
     import("./Mocks/Reason/ReasonDefaultExport.bs.js")
     |> resolve
     <$> (
-      ((module X): (module Importable.ReasonDefaultExport)) =>
+      (module X: Importable.ReasonDefaultExport) =>
         X.lazyValue() ++ X.value ++ X.default |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should resolve two module in parallel", () =>
     (
       import("./Mocks/Reason/ReasonBase.bs.js"),
-      import("./Mocks/Reason/ReasonJsInterop.bs.js")
+      import("./Mocks/Reason/ReasonJsInterop.bs.js"),
     )
     |> resolve2
     <$> (
       (
         (
-          (module X): (module Importable.ReasonBase),
-          (module Y): (module Importable.ReasonJsInterop)
-        )
+          module X: Importable.ReasonBase,
+          module Y: Importable.ReasonJsInterop,
+        ),
       ) =>
         X.lazyValue() ++ X.value |> Y.toUpper |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should fail if at least one module doesn't resolve", () =>
     (
       import("./Mocks/Reason/ReasonBase.bs.js"),
-      import("./Mocks/Reason/???.bs.js")
+      import("./Mocks/Reason/???.bs.js"),
     )
     |> resolve2
-    <$> ((_) => fail("this case should not happen !"))
+    <$> (_ => fail("this case should not happen !"))
     <$!> (error => error |> expect |> toMatchSnapshot)
   );
 });
@@ -65,53 +65,48 @@ describe("Ocaml", () => {
     import("./Mocks/Ocaml/OcamlBase.bs.js")
     |> resolve
     <$> (
-      ((module X): (module Importable.OcamlBase)) =>
+      (module X: Importable.OcamlBase) =>
         X.lazyValue() ++ X.value |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should work with BuckleScript interop binding export", () =>
     import("./Mocks/Ocaml/OcamlJsInterop.bs.js")
     |> resolve
     <$> (
-      ((module X): (module Importable.OcamlJsInterop)) =>
+      (module X: Importable.OcamlJsInterop) =>
         X.inc(2) |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should work with default export", () =>
     import("./Mocks/Ocaml/OcamlDefaultExport.bs.js")
     |> resolve
     <$> (
-      ((module X): (module Importable.OcamlDefaultExport)) =>
+      (module X: Importable.OcamlDefaultExport) =>
         X.lazyValue() ++ X.value ++ X.default |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should resolve two module in parallel", () =>
     (
       import("./Mocks/Ocaml/OcamlBase.bs.js"),
-      import("./Mocks/Ocaml/OcamlJsInterop.bs.js")
+      import("./Mocks/Ocaml/OcamlJsInterop.bs.js"),
     )
     |> resolve2
     <$> (
-      (
-        (
-          (module X): (module Importable.OcamlBase),
-          (module Y): (module Importable.OcamlJsInterop)
-        )
-      ) =>
+      ((module X: Importable.OcamlBase, module Y: Importable.OcamlJsInterop)) =>
         X.lazyValue() ++ X.value |> Y.toUpper |> expect |> toMatchSnapshot
     )
-    <$!> ((_) => fail("this case should not happen !"))
+    <$!> (_ => fail("this case should not happen !"))
   );
   testPromise("should fail if at least one module doesn't resolve", () =>
     (
       import("./Mocks/Ocaml/OcamlBase.bs.js"),
-      import("./Mocks/Ocaml/???.bs.js")
+      import("./Mocks/Ocaml/???.bs.js"),
     )
     |> resolve2
-    <$> ((_) => fail("this case should not happen !"))
+    <$> (_ => fail("this case should not happen !"))
     <$!> (error => error |> expect |> toMatchSnapshot)
   );
 });
