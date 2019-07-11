@@ -14,12 +14,12 @@
     "clean": "bsb -clean-world"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
     "@glennsl/bs-jest": "^0.4.8",
     "babel-jest": "^24.8.0",
-    "babel-plugin-dynamic-import-node": "^2.2.0",
-    "bs-platform": "^5.0.4",
+    "babel-plugin-dynamic-import-node": "^2.3.0",
+    "bs-platform": "^5.0.6",
     "jest": "^24.4.8",
     "ramda": "^0.26.1"
   },
