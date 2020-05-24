@@ -3,6 +3,14 @@
 [![Build Status](https://travis-ci.org/kMeillet/bs-dynamic-import.svg?branch=master)](https://travis-ci.org/kMeillet/bs-dynamic-import)
 ![NPM license](https://img.shields.io/npm/l/bs-dynamic-import.svg?style=flat)
 
+**Warning :** This package is now in read-only mode, if you want to lazy load React components in a ReasonML application use "[reason-loadable](https://github.com/kMeillet/reason-loadable)".
+
+If you want to import something else like a JSON document or JavaScript code that isn't a React component (example : Math library), take a look at "[reason-loadable](https://github.com/kMeillet/reason-loadable)" source code and tests, it can do that with some adaptation.
+
+This package probably doesn't work anymore since BuckleScript changed object representation in JavaScript output in recent version (from array to object).
+
+-------------------------------------
+
 📦🚀 BuckleScript dynamic import interop on JavaScript environment.
 
 Provide a clear path for Reason/Ocaml module to become importable at runtime, preserve type-safety.
